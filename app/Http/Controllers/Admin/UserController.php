@@ -18,7 +18,7 @@ class UserController extends Controller
 
     public function index(): \Inertia\Response
     {
-        $users = User::select('id', 'name', 'email', 'role', 'email_verified_at', 'created_at')
+        $users = User::select('id', 'name', 'email', 'role', 'created_at')
             ->latest()
             ->paginate(10)
             ->withQueryString();
@@ -33,7 +33,7 @@ class UserController extends Controller
         $validated = $request->validate([
             'name'     => ['required', 'string', 'max:255'],
             'email'    => ['required', 'string', 'email', 'max:255', Rule::unique(User::class)],
-            'role'     => ['required', 'in:admin,user'],
+            'role'     => ['required', 'in:admin,author,publisher,user'],
             'password' => ['required', 'string', Password::default(), 'confirmed'],
         ]);
 
@@ -42,7 +42,6 @@ class UserController extends Controller
             'email'             => $validated['email'],
             'role'              => $validated['role'],
             'password'          => Hash::make($validated['password']),
-            'email_verified_at' => now(),
         ]);
 
         return back()->with('success', 'User created successfully.');

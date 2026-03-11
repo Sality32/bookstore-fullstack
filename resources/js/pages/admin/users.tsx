@@ -1,5 +1,5 @@
 import { Head, Link, router, useForm, usePage } from '@inertiajs/react';
-import { CheckCircle, Plus, Shield, Trash2, User, XCircle } from 'lucide-react';
+import { Plus, Shield, Trash2, User} from 'lucide-react';
 import { useState } from 'react';
 import type { FormEvent } from 'react';
 import { Badge } from '@/components/ui/badge';
@@ -190,6 +190,7 @@ export default function AdminUsers({ users }: Props) {
         });
     }
 
+    console.log(users);
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="User Management" />
@@ -219,7 +220,6 @@ export default function AdminUsers({ users }: Props) {
                                         <th className="px-4 py-3 text-left font-medium text-muted-foreground">Name</th>
                                         <th className="px-4 py-3 text-left font-medium text-muted-foreground">Email</th>
                                         <th className="px-4 py-3 text-left font-medium text-muted-foreground">Role</th>
-                                        <th className="px-4 py-3 text-left font-medium text-muted-foreground">Verified</th>
                                         <th className="px-4 py-3 text-left font-medium text-muted-foreground">Joined</th>
                                         <th className="px-4 py-3 text-left font-medium text-muted-foreground">Actions</th>
                                     </tr>
@@ -253,13 +253,7 @@ export default function AdminUsers({ users }: Props) {
                                                     {user.role}
                                                 </Badge>
                                             </td>
-                                            <td className="px-4 py-3">
-                                                {user.email_verified_at ? (
-                                                    <CheckCircle className="size-4 text-green-500" />
-                                                ) : (
-                                                    <XCircle className="size-4 text-destructive" />
-                                                )}
-                                            </td>
+                                          
                                             <td className="px-4 py-3 text-muted-foreground">
                                                 {new Date(user.created_at).toLocaleDateString()}
                                             </td>

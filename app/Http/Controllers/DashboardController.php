@@ -15,8 +15,7 @@ class DashboardController extends Controller
             $stats = [
                 'total_users'   => User::count(),
                 'admin_users'   => User::where('role', 'admin')->count(),
-                'regular_users' => User::where('role', 'user')->count(),
-                'verified_users' => User::whereNotNull('email_verified_at')->count(),
+                'regular_users' => User::where('role', 'user')->orWhere('role', 'author')->orWhere('role', 'publisher')->count(),
             ];
         }
 

@@ -16,15 +16,24 @@ class UserController extends Controller
 {
     use PasswordValidationRules;
 
-    public function index(): \Inertia\Response
+    public function index(Request $request): \Inertia\Response
     {
-        $users = User::select('id', 'name', 'email', 'role', 'created_at')
-            ->latest()
-            ->paginate(10)
-            ->withQueryString();
+        $query = User::select('id', 'name', 'email', 'role', 'created_at')->latest();
+
+        if ($search = $request->input('search')) {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%");
+            });
+        }
+
+        if ($role = $request->input('role')) {
+            $query->where('role', $role);
+        }
 
         return inertia('admin/users', [
-            'users' => $users,
+            'users'   => $query->paginate(10)->withQueryString(),
+            'filters' => $request->only('search', 'role'),
         ]);
     }
 

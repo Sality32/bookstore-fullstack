@@ -25,7 +25,7 @@ class AuthorController extends Controller
         }
 
         return inertia('admin/authors', [
-            'authors'        => $query->paginate(15)->withQueryString(),
+            'authors'        => $query->paginate(10)->withQueryString(),
             'availableUsers' => User::where('role', 'author')
                 ->select('id', 'name', 'email')
                 ->get(),

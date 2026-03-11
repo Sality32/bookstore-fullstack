@@ -1,8 +1,10 @@
 import { Head, router } from '@inertiajs/react';
-import { BookOpen } from 'lucide-react';
+import { BookOpen, Search } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
 import AppLayout from '@/layouts/app-layout';
 import type { BreadcrumbItem } from '@/types';
 
@@ -37,9 +39,22 @@ type PublisherInfo = { id: number; name: string; description: string | null };
 type Props = {
     publisher: PublisherInfo;
     books: PaginatedBooks;
+    filters: { search?: string };
 };
 
-export default function PublisherBooks({ publisher, books }: Props) {
+export default function PublisherBooks({ publisher, books, filters }: Props) {
+    const [search, setSearch] = useState(filters.search ?? '');
+
+    useEffect(() => {
+        const t = setTimeout(() => {
+            router.get(
+                '/publisher/books',
+                { search: search || undefined },
+                { preserveState: true, replace: true },
+            );
+        }, 300);
+        return () => clearTimeout(t);
+    }, [search]);
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="My Catalog" />
@@ -56,6 +71,17 @@ export default function PublisherBooks({ publisher, books }: Props) {
                         </p>
                     </CardHeader>
                     <CardContent>
+                        <div className="mb-4 flex items-center gap-3">
+                            <div className="relative flex-1">
+                                <Search className="absolute left-2.5 top-2.5 size-4 text-muted-foreground" />
+                                <Input
+                                    className="pl-8"
+                                    placeholder="Search by title or ISBN…"
+                                    value={search}
+                                    onChange={(e) => setSearch(e.target.value)}
+                                />
+                            </div>
+                        </div>
                         <p className="mb-4 text-sm text-muted-foreground">
                             {books.total} book{books.total !== 1 ? 's' : ''} in your catalog.
                         </p>

@@ -100,5 +100,21 @@ class DatabaseSeeder extends Seeder
 
         // Extra regular users
         User::factory(5)->create();
+
+        // ─── Bulk data via factories ───────────────────────────────────────────
+        // 12 extra author profiles (unlinked to user accounts)
+        \App\Models\Author::factory(12)->create();
+
+        // 8 extra publisher profiles (unlinked to user accounts)
+        \App\Models\Publisher::factory(8)->create();
+
+        // 55 extra books distributed across ALL existing authors & publishers
+        $allAuthors    = \App\Models\Author::all();
+        $allPublishers = \App\Models\Publisher::all();
+
+        \App\Models\Book::factory(55)
+            ->recycle($allAuthors)
+            ->recycle($allPublishers)
+            ->create();
     }
 }

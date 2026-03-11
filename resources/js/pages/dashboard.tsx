@@ -1,5 +1,5 @@
 import { Head, usePage } from '@inertiajs/react';
-import { BarChart3, CheckCircle, ShieldCheck, Users } from 'lucide-react';
+import { BarChart3, ShieldCheck, Users } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import AppLayout from '@/layouts/app-layout';
 import type { BreadcrumbItem } from '@/types';
@@ -16,7 +16,6 @@ type AdminStats = {
     total_users: number;
     admin_users: number;
     regular_users: number;
-    verified_users: number;
 };
 
 type Props = {
@@ -54,7 +53,7 @@ export default function Dashboard({ stats }: Props) {
 
                 {/* Admin Stats */}
                 {isAdmin && 'total_users' in stats && (
-                    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                         <Card>
                             <CardHeader className="flex flex-row items-center justify-between pb-2">
                                 <CardTitle className="text-sm font-medium">Total Users</CardTitle>
@@ -88,26 +87,8 @@ export default function Dashboard({ stats }: Props) {
                             </CardContent>
                         </Card>
 
-                        <Card>
-                            <CardHeader className="flex flex-row items-center justify-between pb-2">
-                                <CardTitle className="text-sm font-medium">Verified</CardTitle>
-                                <CheckCircle className="size-4 text-muted-foreground" />
-                            </CardHeader>
-                            <CardContent>
-                                <div className="text-3xl font-bold">{stats.verified_users}</div>
-                                <p className="text-xs text-muted-foreground">Email-verified accounts</p>
-                            </CardContent>
-                        </Card>
                     </div>
                 )}
-
-                {/* Role permission info */}
-                <div className="rounded-xl border bg-card p-6 shadow-sm">
-                    <h2 className="mb-3 text-lg font-semibold">
-                        {isAdmin ? 'Admin Access' : 'Your Access'}
-                    </h2>
-                    
-                </div>
             </div>
         </AppLayout>
     );

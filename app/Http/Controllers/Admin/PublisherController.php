@@ -25,7 +25,7 @@ class PublisherController extends Controller
         }
 
         return inertia('admin/publishers', [
-            'publishers'     => $query->paginate(15)->withQueryString(),
+            'publishers'     => $query->paginate(5)->withQueryString(),
             'availableUsers' => User::where('role', 'publisher')
                 ->select('id', 'name', 'email')
                 ->get(),

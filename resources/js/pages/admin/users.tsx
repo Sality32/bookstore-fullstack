@@ -1,6 +1,6 @@
 import { Head, Link, router, useForm, usePage } from '@inertiajs/react';
-import { Plus, Shield, Trash2, User} from 'lucide-react';
-import { useState } from 'react';
+import { Plus, Search, Shield, Trash2, User} from 'lucide-react';
+import { useEffect, useState } from 'react';
 import type { FormEvent } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -52,6 +52,7 @@ type PaginatedUsers = {
 
 type Props = {
     users: PaginatedUsers;
+    filters: { search?: string; role?: string };
 };
 
 function AddUserDialog() {
@@ -179,8 +180,22 @@ function AddUserDialog() {
     );
 }
 
-export default function AdminUsers({ users }: Props) {
+export default function AdminUsers({ users, filters }: Props) {
     const { auth } = usePage().props;
+
+    const [search, setSearch] = useState(filters.search ?? '');
+    const [role, setRole]     = useState(filters.role ?? '');
+
+    useEffect(() => {
+        const t = setTimeout(() => {
+            router.get(
+                '/admin/users',
+                { search: search || undefined, role: role || undefined },
+                { preserveState: true, replace: true },
+            );
+        }, 300);
+        return () => clearTimeout(t);
+    }, [search, role]);
 
     async function deleteUser(user: UserRow) {
         const result = await confirmDelete(user.name);
@@ -190,7 +205,6 @@ export default function AdminUsers({ users }: Props) {
         });
     }
 
-    console.log(users);
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="User Management" />
@@ -204,6 +218,31 @@ export default function AdminUsers({ users }: Props) {
                         </p>
                     </div>
                     <AddUserDialog />
+                </div>
+
+                {/* Search + Filter */}
+                <div className="flex gap-3">
+                    <div className="relative flex-1">
+                        <Search className="absolute left-2.5 top-2.5 size-4 text-muted-foreground" />
+                        <Input
+                            className="pl-8"
+                            placeholder="Search by name or email…"
+                            value={search}
+                            onChange={(e) => setSearch(e.target.value)}
+                        />
+                    </div>
+                    <Select value={role || 'all'} onValueChange={(v) => setRole(v === 'all' ? '' : v)}>
+                        <SelectTrigger className="w-40">
+                            <SelectValue placeholder="All roles" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="all">All roles</SelectItem>
+                            <SelectItem value="admin">Admin</SelectItem>
+                            <SelectItem value="author">Author</SelectItem>
+                            <SelectItem value="publisher">Publisher</SelectItem>
+                            <SelectItem value="user">User</SelectItem>
+                        </SelectContent>
+                    </Select>
                 </div>
 
                 {/* Table Card */}

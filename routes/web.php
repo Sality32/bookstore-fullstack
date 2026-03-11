@@ -12,12 +12,12 @@ use Illuminate\Support\Facades\Route;
 Route::inertia('/', 'welcome')->name('home');
 
 // Authenticated routes (all roles)
-Route::middleware(['auth', 'verified'])->group(function () {
+Route::middleware(['auth'])->group(function () {
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
 });
 
 // Admin-only routes
-Route::middleware(['auth', 'verified', 'role:admin'])
+Route::middleware(['auth', 'role:admin'])
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {
@@ -46,7 +46,7 @@ Route::middleware(['auth', 'verified', 'role:admin'])
     });
 
 // Author-only routes
-Route::middleware(['auth', 'verified', 'role:author'])
+Route::middleware(['auth', 'role:author'])
     ->prefix('author')
     ->name('author.')
     ->group(function () {
@@ -58,7 +58,7 @@ Route::middleware(['auth', 'verified', 'role:author'])
     });
 
 // Publisher-only routes
-Route::middleware(['auth', 'verified', 'role:publisher'])
+Route::middleware(['auth', 'role:publisher'])
     ->prefix('publisher')
     ->name('publisher.')
     ->group(function () {

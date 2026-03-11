@@ -42,12 +42,10 @@ Authentication is powered by **Laravel Fortify** (headless, no built-in views). 
 | Login | ✅ Enabled |
 | Registration | ✅ Enabled (admin creates accounts via Users page) |
 | Password Reset | ✅ Enabled |
-| Email Verification | ✅ Enabled |
-| Two-Factor Authentication (TOTP) | ✅ Enabled |
 
 > **Note:** Public self-registration is intentionally disabled at the UI level. User accounts are created and managed by administrators from the Users management page.
 
-**Rate limiting** is applied to both login (`5 attempts/minute per IP+username`) and two-factor challenge (`5 attempts/minute`).
+**Rate limiting** is applied to login (`5 attempts/minute per IP+username`).
 
 ### Authorization — Role-Based Access Control (RBAC)
 
@@ -64,7 +62,7 @@ Every user has a `role` field (enum) with one of four values:
 
 ```php
 // Example route guard
-Route::middleware(['auth', 'verified', 'role:admin'])->group(...);
+Route::middleware(['auth', 'role:admin'])->group(...);
 ```
 
 **Author ownership** is enforced at the controller level: `Author\BookController` resolves the authenticated user's linked `Author` profile and verifies `$book->author_id === $author->id` before allowing update/delete/show.
@@ -77,7 +75,6 @@ Route::middleware(['auth', 'verified', 'role:admin'])->group(...);
 users
 ├── id, name, email, email_verified_at
 ├── role (enum: admin | author | publisher | user)
-├── two_factor_secret, two_factor_recovery_codes, two_factor_confirmed_at
 └── password, remember_token, timestamps
 
 authors
@@ -248,11 +245,6 @@ php artisan optimize
 php artisan test
 ```
 
-Run only the book feature tests:
-
-```bash
-php artisan test tests/Feature/BookTest.php
-```
 
 ---
 
